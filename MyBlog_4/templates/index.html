@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+{% for blog in blogs %}
+    <h1><a href="/myblog/{{ blog.id }}">{{ blog.title }}</a></h1>
+    <p>{{ blog.content_body }}</p>
+{% endfor %}
+</body>
+</html>
