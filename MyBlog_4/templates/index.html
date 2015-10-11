@@ -8,5 +8,16 @@
     <h1><a href="/myblog/{{ blog.id }}">{{ blog.title }}</a></h1>
     <p>{{ blog.content_body }}</p>
 {% endfor %}
+<ul>
+    <li>Session start date: {{ session_date }}</li>
+    <li>Blogs visited: {{ blogs_visited }}</li>
+    <li>Blogs edited: {{blogs_edited  }}</li>
+    <li>Blogs created: {{ blogs_created }}</li>
+    <li>Blogs deleted: {{ blogs_deleted }}</li>
+</ul>
+
+<form action="/erasestats/" method="get">
+    <input type="submit" value="Reset">
+</form>
 </body>
 </html>

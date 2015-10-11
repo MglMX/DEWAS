@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Blog</title>
+</head>
+<body>
+    <h1>{{ title }}</h1>
+   The article has been modified while you were editing it.
+
+   <h2>Current version</h2>
+   <p>{{ content }}</p>
+
+   <h2>Your version</h2>
+
+   <p>{{ user_content}}</p>
+
+   <h2>New version</h2>
+   Please combine the current version and your version into a new article
+    <form action="/editblog/{{ id }}/" method="post">
+    {% csrf_token %}
+    <textarea name="content" cols="80" rows="30">{{ content }}</textarea><br>
+    <input type="hidden" name="title" value="{{ title }}" />
+
+    <input type="hidden" name="version" value="{{ version }}" />
+    <input type="submit" value="Save">
+  </form>
+</body>
+</html>
