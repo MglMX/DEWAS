@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>YAAS</title>
+</head>
+<body style="margin: 0 auto; width: 900px">
+   <h1>YAAS</h1>
+    <p>Welcome to YAAS</p>
+   {% if logged_in %}
+       <p>You are logged!!</p>
+   {% else %}
+        <div id="login_panel">
+        <form action="/login/" method="post">
+        {% csrf_token %}
+            Username:
+        <input name="username"/><br>
+            Password:
+            <input type="password" name="password" /><br>
+
+            <input type="submit" value="Login">
+        </form>
+        <a href="/register/">Sign up</a>
+    </div>
+    {% endif %}
+
+
+</body>
+</html>
