@@ -8,7 +8,9 @@
    <h1>YAAS</h1>
     <p>Welcome to YAAS</p>
    {% if logged_in %}
-       <p>You are logged!!</p>
+       <p>Logged in as: <a href="/editaccount/">{{ username }}</a></p>
+       <p><a href="/logout/">Logout</a></p>
+
    {% else %}
         <div id="login_panel">
         <form action="/login/" method="post">

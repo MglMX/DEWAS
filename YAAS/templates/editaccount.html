@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Account editing</title>
+</head>
+<body>
+{% if logged_in %}
+    <h1>Account editing</h1>
+    <p>Here you can edit your account email and password</p>
+    <form action="/editaccount/" method="post">
+    {% csrf_token %}
+        Password:
+    <input type="password" name="password"></br>
+        New password
+    <input type="password" name="newpassword"></br>
+        New email:
+    <input type="email" name="email" value="{{ email }}"/><br>
+
+    <input type="submit" value="Save">
+    </form>
+{% else %}
+    <p>You are not logged in!</p>
+{% endif %}
+</body>
+</html>
