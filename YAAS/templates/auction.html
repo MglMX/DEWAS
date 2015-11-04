@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>auction </title>
+</head>
+<body>
+<h2>{{ title }}
+{% if is_seller %}
+    <a href="/editauction/{{ id }}"> [edit]</a>
+{% endif %}
+</h2>
+<p>{{ description }}</p>
+<p>Seller: {{ seller }}</p>
+<p>Current price: {{ last_bid }}</p>
+<p>Last bidder: {{ last_bider }}</p>
+<p>Deadline: {{ deadline }}</p>
+
+<form action="/bid/{{ id }}">
+    {% csrf_token %}
+    <input name="bid" pattern="^[0-9]{1,5}\.?[0-9]{0,2}$">
+    <input type="submit" value="BID">
+</form>
+</body>
+</html>

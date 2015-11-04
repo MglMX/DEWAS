@@ -1,14 +1,14 @@
 from django.db import models
 
 class Auction(models.Model):
-    title   = models.CharField(max_length="20")
+    title = models.CharField(max_length="20")
     description = models.TextField()
     desc_version = models.IntegerField(default="0")
     seller = models.CharField(max_length="30")
-    minimun_price = models.DecimalField(max_digits="7",decimal_places="2")
+    minimun_price = models.FloatField()
     deadline = models.DateTimeField()
     status = models.CharField(max_length="3")
-    last_bid = models.DecimalField(max_digits="7",decimal_places="2")
+    last_bid = models.FloatField()
     last_bider = models.CharField(max_length="30", blank="True")
 
     @classmethod
