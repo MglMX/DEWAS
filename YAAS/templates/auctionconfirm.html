@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm auction</title>
+</head>
+<body>
+<h1>Confirm auction</h1>
+<div>
+    <h2>{{ title }}</h2>
+    <p>
+    {% autoescape on %}
+        {{ description }}
+    {% endautoescape %}
+    </p>
+    <p>Minimum_price: {{ minimum_price }}</p>
+    <p>Due date: {{ deadline }}</p>
+    <form action="/confirmauction/" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="title" value="{{ title }}">
+        <input type="hidden" name="description" value="{{ description }}">
+        <input type="hidden" name="minimum_price" value="{{ minimum_price }}">
+        <input type="hidden" name="deadline" value="{{ deadline }}">
+        <input type="submit" name="save" value="YES">
+        <input type="submit" name="save" value="NO">
+
+    </form>
+</div>
+</body>
+</html>

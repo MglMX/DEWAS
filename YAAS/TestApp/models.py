@@ -3,6 +3,7 @@ from django.db import models
 class Auction(models.Model):
     title   = models.CharField(max_length="20")
     description = models.TextField()
+    desc_version = models.IntegerField(default="0")
     seller = models.CharField(max_length="30")
     minimun_price = models.DecimalField(max_digits="7",decimal_places="2")
     deadline = models.DateTimeField()

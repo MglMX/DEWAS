@@ -15,6 +15,8 @@ urlpatterns = patterns('',
                        (r'^login/$', log_in),
                        (r'^logout/$', log_out),
                        (r'^editaccount/$', edit_account),
+                       (r'^createauction/$', create_auction),
+                       (r'^confirmauction/$', confirm_auction),
 
 
                        (r'$', show_home),

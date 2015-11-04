@@ -6,6 +6,9 @@ from django.template import Template, Context, RequestContext
 from django.template.loader import get_template
 from django.contrib.auth.models import User, Permission
 from django.contrib.auth import login, authenticate, logout, hashers
+from datetime import datetime
+from django.core.mail import EmailMessage
+
 import re, string
 
 
@@ -81,3 +84,63 @@ def edit_account(request):
 
         return render_to_response("editaccount.html",{'logged_in': logged_in,'email':email}, context_instance=RequestContext(request))
 
+def confirm_auction(request):
+    if request.method=="POST":
+        if request.POST["save"] == "YES":
+
+            auction = Auction()
+            auction.title = request.POST["title"]
+            auction.description = request.POST["description"]
+            auction.minimun_price = request.POST["minimum_price"]
+            deadline = datetime.strptime(request.POST["deadline"],"%d.%m.%Y_%H:%M")
+            auction.deadline = deadline
+            auction.last_bid = request.POST["minimum_price"]
+            auction.status = "ACT"
+            auction.seller = request.user.username
+            auction.save()
+
+            email = EmailMessage('YAAS: Auction created', 'Hello '+request.user.username+ ",\n Your auction '"+request.POST["title"]+"' has been succesfully created", to=[request.user.email])
+            email.send()
+
+            return HttpResponseRedirect('/')
+
+
+
+def create_auction(request):
+    if request.method == "POST":
+        if request.user.is_authenticated():
+            valid=True
+            title=request.POST["title"]
+            description=request.POST["description"]
+            minimum_price=request.POST["minimunprice"]
+            message=""
+
+            if float(minimum_price)<0:
+                valid=False
+                message+="Minimum price must be greater than 0."
+
+            seller = request.user.username
+            deadline=request.POST["deadline"]
+            result=re.match("[0-9]{2}\.[0-9]{2}\.[0-9]{4}_[0-9]{2}:[0-9]{2}",deadline)
+
+            if result is None:
+                valid=False
+                message+=" The date does not match the format"
+            else:
+                date=datetime.strptime(deadline,"%d.%m.%Y_%H:%M")
+                days=(date-datetime.now()).days
+                if days<3:
+                    valid=False
+                    message+="The auction has to live at least 72 hours"
+
+            if valid:
+                return render_to_response("auctionconfirm.html",{'title':title,'description':description,'minimum_price':minimum_price,'deadline':deadline},context_instance=RequestContext(request))
+            else:
+                return HttpResponse("Error: "+message)
+
+    else:
+        logged_in=False
+        if request.user.is_authenticated():
+            logged_in=True
+
+        return render_to_response("auctioncreation.html",{'logged_in': logged_in}, context_instance=RequestContext(request))

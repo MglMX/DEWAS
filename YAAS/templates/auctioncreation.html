@@ -1,12 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Auction creation</title>
 </head>
 <body>
-<form action="/createauction" method="POST">
-    
-</form>
+<h1>Auction creation</h1>
+{% if logged_in %}
+    <form action="/createauction/" method="POST">
+        {% csrf_token %}
+        Title:
+        <input name="title" required/></br>
+        Description:
+        <textarea name="description" required></textarea></br>
+        Minumun price:
+        <input name="minimunprice" pattern="^[0-9]{1,5}\.?[0-9]{0,2}$" title="Introduce a value between 0 and 99999" required></br>
+        Deadline(dd.mm.yyyy_hh:mm):
+        <input name="deadline" pattern="[0-9]{2}\.[0-9]{2}\.[0-9]{4}_[0-9]{2}:[0-9]{2}" title="Format: dd.mm.yyyy_hh:mm" required></br>
+        <input type="submit" value="Submit">
+
+    </form>
+{% else %}
+    <p>You have to be register to create an auction</p>
+{% endif %}
+
 </body>
 </html>
