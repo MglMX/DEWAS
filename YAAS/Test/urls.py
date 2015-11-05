@@ -19,6 +19,8 @@ urlpatterns = patterns('',
                        (r'^confirmauction/$', confirm_auction),
                        (r'^auction/(?P<id>\d+)$', show_auction),
                        (r'^editauction/(?P<id>\d+)$', edit_auction),
+                       (r'^search/$', search),
+                       (r'^bid/(?P<id>\d+)$', bid),
 
 
                        (r'$', show_home),

@@ -5,21 +5,26 @@
     <title>auction </title>
 </head>
 <body>
+<a href="/">Go home</a>
 <h2>{{ title }}
 {% if is_seller %}
     <a href="/editauction/{{ id }}"> [edit]</a>
 {% endif %}
 </h2>
 <p>{{ description }}</p>
-<p>Seller: {{ seller }}</p>
-<p>Current price: {{ last_bid }}</p>
-<p>Last bidder: {{ last_bider }}</p>
-<p>Deadline: {{ deadline }}</p>
+<p><b>Seller:</b> {{ seller }}</p>
+<p><b>Current price</b> : {{ last_bid }}</p>
+<p><b>Last bidder:</b>  {{ last_bider }}</p>
+<p><b>Deadline:</b>  {{ deadline }}</p>
 
-<form action="/bid/{{ id }}">
+<form action="/bid/{{ id }}" method="post">
     {% csrf_token %}
     <input name="bid" pattern="^[0-9]{1,5}\.?[0-9]{0,2}$">
+    <input type="hidden" name="desc_version" value="{{ desc_version }}"/>
     <input type="submit" value="BID">
 </form>
+{% if bid_placed %}
+    <p><b>{{ message }}</b></p>
+{% endif %}
 </body>
 </html>

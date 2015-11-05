@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search result</title>
+</head>
+<body>
+<a href="/">Go home</a>
+    <h2>Auctions</h2>
+   <form action="/search/" method="get">
+       <input name="title" placeholder="Search by title">
+       <input type="submit" value="Search">
+   </form>
+   <p>-------------------------------------------------------------</p>
+    {% for auction in auctions %}
+        <div class="auction">
+        <h3><a href="/auction/{{ auction.id }}">{{ auction.title }}</a></h3>
+         <p>{{ auction.description }}</p>
+        <p>-------------------------------------------------------------</p>
+        </div>
+    {% endfor %}
+</body>
+</html>
