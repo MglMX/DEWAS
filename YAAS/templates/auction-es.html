@@ -5,27 +5,27 @@
     <title>auction </title>
 </head>
 <body>
-<a href="/">Go home</a>
+<a href="/">Volver</a>
 <h2>{{ title }}
 {% if is_seller %}
-    <a href="/editauction/{{ id }}"> [edit]</a>
+    <a href="/editauction/{{ id }}"> [editar]</a>
 {% endif %}
 {% if is_super %}
     <a href="/banauction/{{ id }}"> [BAN]</a>
 {% endif %}
 </h2>
 <p>{{ description }}</p>
-<p><b>Status: </b> {{ status }}</p>
-<p><b>Seller:</b> {{ seller }}</p>
-<p><b>Current price</b> : {{ last_bid }}</p>
-<p><b>Last bidder:</b>  {{ last_bider }}</p>
-<p><b>Deadline:</b>  {{ deadline }}</p>
+<p><b>Estado: </b> {{ status }}</p>
+<p><b>Vendedor:</b> {{ seller }}</p>
+<p><b>Precio</b> : {{ last_bid }}</p>
+<p><b>Último pujadorr:</b>  {{ last_bider }}</p>
+<p><b>Fecha límite:</b>  {{ deadline }}</p>
 {% if status == "ACTIVE" %}
 <form action="/bid/{{ id }}" method="post">
     {% csrf_token %}
     <input name="bid" pattern="^[0-9]{1,5}\.?[0-9]{0,2}$">
     <input type="hidden" name="desc_version" value="{{ desc_version }}"/>
-    <input type="submit" value="BID">
+    <input type="submit" value="PUJAR">
 </form>
 {% endif %}
 {% if show_msg %}

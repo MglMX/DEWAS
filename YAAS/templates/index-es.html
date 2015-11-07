@@ -8,7 +8,7 @@
 </head>
 <body style="margin: 0 auto; width: 900px">
    <h1>YAAS</h1>
-    <p>Welcome to YAAS</p>
+    <p>Bienvenido a YAAS</p>
    <form action="/language/" method="post" >
        {% csrf_token %}
        <select name="language" onchange="this.form.submit();">
@@ -17,17 +17,17 @@
        </select>
    </form>
    {% if logged_in %}
-       <p>Logged in as: <a href="/editaccount/">{{ username }}</a></p>
-       <p><a href="/logout/">Logout</a></p>
-       <p><a href="/createauction/">Create new auction</a></p>
+       <p>Sesión iniciada como: <a href="/editaccount/">{{ username }}</a></p>
+       <p><a href="/logout/">Salir</a></p>
+       <p><a href="/createauction/">Crear nueva subasta</a></p>
 
    {% else %}
         <div id="login_panel">
         <form action="/login/" method="post">
         {% csrf_token %}
-            Username:
+            Usuario:
         <input name="username"/><br>
-            Password:
+            Contraseña:
             <input type="password" name="password" /><br>
 
             <input type="submit" value="Login">
@@ -35,16 +35,16 @@
         <a href="/register/">Sign up</a>
     </div>
     {% endif %}
-    <h2>Auctions</h2>
+    <h2>Subastas</h2>
    <form action="/search/" method="get">
-       <input name="title" placeholder="Search by title">
-       <input type="submit" value="Search">
+       <input name="title" placeholder="Buscar por titulo">
+       <input type="submit" value="Buscar">
    </form>
    <p>-------------------------------------------------------------</p>
     {% for auction in auctions %}
         <div class="auction">
-        <h3><a href="/auction/{{ auction.id }}">{{ auction.title }}</a></h3><p><b>Vendedor: </b>{{ auction.seller }}</p>
-         <p><b>Description: </b>{{ auction.description }}</p>
+        <h3><a href="/auction/{{ auction.id }}">{{ auction.title }}</a></h3><p><b>Seller: </b>{{ auction.seller }}</p>
+         <p><b>Descripción: </b>{{ auction.description }}</p>
         <p>-------------------------------------------------------------</p>
         </div>
     {% endfor %}

@@ -21,6 +21,12 @@ urlpatterns = patterns('',
                        (r'^editauction/(?P<id>\d+)$', edit_auction),
                        (r'^search/$', search),
                        (r'^bid/(?P<id>\d+)$', bid),
+                       (r'^banauction/(?P<id>\d+)$', ban),
+                       (r'^language/$', change_lang),
+                       (r'^api/auction/(?P<id>\d+)$', api_auction),
+                       (r'^api/auction/$', api_auctions),
+
+                       url(r'^admin/', include(admin.site.urls)),
 
 
                        (r'$', show_home),
@@ -29,5 +35,5 @@ urlpatterns = patterns('',
                        # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
                        # Uncomment the next line to enable the admin:
-                       # url(r'^admin/', include(admin.site.urls)),
+
                        )

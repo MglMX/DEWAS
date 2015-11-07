@@ -9,9 +9,33 @@ from django.contrib.auth.models import User, Permission
 from django.contrib.auth import login, authenticate, logout, hashers
 from datetime import datetime
 from django.core.mail import EmailMessage
+import json
+from django.core import serializers
 
 import re, string
 
+def api_auction(request,id):
+    auction = Auction.get_by_id(id)
+    auction_ser = serializers.serialize('json',[auction,])
+    struct = json.loads(auction_ser)
+    auction_ser = json.dumps(struct[0])
+
+    return HttpResponse(auction_ser, content_type='application/json')
+
+def api_auctions(request):
+    auctions = Auction.objects.all()
+    auctions_ser = serializers.serialize('json',auctions)
+    struct = json.loads(auctions_ser)
+    auctions_ser = json.dumps(struct)
+
+    return HttpResponse(auctions_ser, content_type='application/json')
+
+def change_lang(request):
+    if request.method=="POST":
+        lang=request.POST["language"]
+        print "lang: "+lang
+        request.session["lang"]=lang
+        return HttpResponseRedirect("/")
 
 def show_home(request):
     # / points to the "Home" article
@@ -21,10 +45,31 @@ def show_home(request):
         logged_in = True
         username = request.user.username
 
-    auctions = Auction.objects.all()
+    auctions = Auction.objects.exclude(status="BAN")
 
-    return render_to_response("index.html", {'logged_in': logged_in, 'username': username, 'auctions': auctions},
+    if "lang" not in request.session:
+        request.session["lang"]="ENG"
+
+    if request.session["lang"]=="ENG":
+        template="index.html"
+    elif request.session["lang"]=="ESP":
+        template="index-es.html"
+
+
+    return render_to_response(template, {'logged_in': logged_in, 'username': username, 'auctions': auctions},
                               context_instance=RequestContext(request))
+
+
+def ban(request,id):
+    if request.user.is_superuser and Auction.exists(id):
+        auction = Auction.get_by_id(id)
+        auction.status="BAN"
+        auction.save()
+
+        return HttpResponseRedirect("/auction/"+str(auction.id)+"?m=banned")
+
+    return HttpResponseRedirect("/")
+
 
 
 def show_auction(request, id):
@@ -43,18 +88,48 @@ def show_auction(request, id):
         if seller == request.user.username:
             is_seller = True
 
+        is_super = False
+
+        if request.user.is_superuser:
+            is_super = True
+
+
+        #Status to show in the template
+
+        print "Status: "+status
+        if status=="ACT":
+            status_m="ACTIVE"
+        elif status=="BAN":
+            status_m="BANNED"
+        elif status=="DUE":
+            status_m="DUE"
+        else:
+            status_m="ADJUDICATED"
+
         m=request.GET.get('m','')
 
-        bid_placed=False
+        show_msg=True
         message=""
         if m=="success":
-            bid_placed=True
             message="Bid placed succesfully! "
+        elif m=="banned":
+            message="The auction has been banned"
+        elif m == "changed":
+            message="The description of the auction has changed or your bid is not big enough. Please place your bet again."
+        elif m == "own_act":
+            message="You cannot bid you own auction"
+        else:
+            show_msg=False
 
-        return render_to_response("auction.html",
+        if request.session["lang"]=="ENG":
+            template="auciton.html"
+        elif request.session["lang"]=="ESP":
+            template="auction-es.html"
+
+        return render_to_response(template,
                                   dict(title=title, description=description, desc_version=desc_version, seller=seller,
                                        last_bid=last_bid, last_bider=last_bider, deadline=deadline, id=id,
-                                       is_seller=is_seller, bid_placed=bid_placed,message=message),
+                                       is_seller=is_seller, show_msg=show_msg,message=message,status=status_m,is_super=is_super),
                                   context_instance=RequestContext(request))
 
 
@@ -74,9 +149,9 @@ def bid(request, id):
         auction = Auction.get_by_id(id)
         print "placed_bid: "+str(placed_bid)+" last_bd: "+str(auction.last_bid)+" resta: "+str(placed_bid - float(auction.last_bid))
         if auction.desc_version != int(request.POST["desc_version"]) or (placed_bid - float(auction.last_bid)) < 0.01:
-            return HttpResponse("The description of the auction has changed or your bid is not big enough. Please <a href='/auction/" + str(auction.id) + "'>click here</a> and place your bid again")
+            return HttpResponseRedirect("/auction/"+str(auction.id)+"?m=changed")
         elif auction.seller==request.user.username:
-            return HttpResponse("You cannot bid in your own auction.")
+            return HttpResponseRedirect("/auction/"+str(auction.id)+"?m=own_auct")
         elif auction.status == "ACT":
 
             #Email to the seller
@@ -211,7 +286,7 @@ def confirm_auction(request):
             email = EmailMessage('YAAS: Auction created',
                                  'Hello ' + request.user.username + ",\n Your auction '" + request.POST[
                                      "title"] + "' has been succesfully created", to=[request.user.email])
-            # email.send()
+            email.send()
 
         return HttpResponseRedirect('/')
 
